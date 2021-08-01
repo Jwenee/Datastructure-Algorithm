@@ -42,6 +42,12 @@ public class SortingHelper {
         if ("QuickSort2".equals(sortName)) {
             QuickSort2.sort(arr);
         }
+        if ("HeapSort".equals(sortName)) {
+            HeapSort.sort(arr);
+        }
+        if ("HeapSort2".equals(sortName)) {
+            HeapSort.sort2(arr);
+        }
         long endTime = System.nanoTime();
         double duration = (endTime - startTime) / 1000000000.0;
 

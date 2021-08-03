@@ -60,6 +60,12 @@ public class SortingHelper {
         if ("ShellSort".equals(sortName)) {
             ShellSort.sort(arr);
         }
+        if ("ShellSort2".equals(sortName)) {
+            ShellSort.sort2(arr);
+        }
+        if ("ShellSort3".equals(sortName)) {
+            ShellSort.sort3(arr);
+        }
         long endTime = System.nanoTime();
         double duration = (endTime - startTime) / 1000000000.0;
 

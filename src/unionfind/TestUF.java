@@ -33,10 +33,14 @@ public class TestUF {
         UnionFind2 unionFind2 = new UnionFind2(size);
         UnionFind3 unionFind3 = new UnionFind3(size);
         UnionFind4 unionFind4 = new UnionFind4(size);
+        UnionFind5 unionFind5 = new UnionFind5(size);
+        UnionFind6 unionFind6 = new UnionFind6(size);
 
-        System.out.println("UnionFind1: " + test(unionFind1, m) + " s");
-        System.out.println("UnionFind2: " + test(unionFind2, m) + " s");
+//        System.out.println("UnionFind1: " + test(unionFind1, m) + " s");
+//        System.out.println("UnionFind2: " + test(unionFind2, m) + " s");
         System.out.println("UnionFind3: " + test(unionFind3, m) + " s");
         System.out.println("UnionFind4: " + test(unionFind4, m) + " s");
+        System.out.println("UnionFind5: " + test(unionFind5, m) + " s");
+        System.out.println("UnionFind6: " + test(unionFind6, m) + " s");
     }
 }

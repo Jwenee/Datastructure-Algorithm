@@ -2,6 +2,9 @@ package tree;
 
 import java.util.TreeMap;
 
+/**
+ * 前缀树
+ */
 public class Trie {
 
     private class Node {

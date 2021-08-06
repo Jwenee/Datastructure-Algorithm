@@ -1,5 +1,8 @@
 package unionfind;
 
+/**
+ * 并查集
+ */
 public interface UF {
 
     int getSize();

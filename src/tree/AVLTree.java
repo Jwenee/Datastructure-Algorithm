@@ -99,7 +99,7 @@ public class AVLTree<K extends Comparable<K>, V> {
 //        x.left = y;
 //        y.right = T2;
 
-//        右旋过程
+//        左旋过程
         yR.left = y;
         y.right = yRL;
 
@@ -163,11 +163,144 @@ public class AVLTree<K extends Comparable<K>, V> {
             System.out.println("Unbalanced: " + balanceFactor);
 
 //        平衡维护
+//        1.插入的元素在不平衡节点的左侧的左侧，右旋 （节点LL)
+//        2.插入的节点在不平衡节点的右侧的右侧，左旋 （节点RR)
+//        3.插入的节点在不平衡节点的左侧的右侧      （节点LR)
+//        4.插入的节点在不平衡节点的右侧的左侧      （节点RL)
+//
+//             y          y                y           y
+//            /            \              /             \
+//           x              x            x               x
+//          /                \            \             /
+//         z                  z            z           z
+
+//      LL
         if (balanceFactor > 1 && getBalanceFactor(node.left) >= 0)
             return rightRotate(node); // 依次返回，平衡父节点
-        if (balanceFactor < -1 && getBalanceFactor(node.left) <= 0)
+//      RR
+        if (balanceFactor < -1 && getBalanceFactor(node.right) <= 0)
             return leftRotate(node); // 依次返回，平衡父节点
+//      LR
+        if (balanceFactor > 1 && getBalanceFactor(node.left) < 0) {
+            node.left = leftRotate(node.left); // 转换为LL
+            return rightRotate(node);
+        }
+//      RL
+        if (balanceFactor < -1 && getBalanceFactor(node.right) > 0) {
+            node.right = rightRotate(node.right); // 转换为RR
+            return leftRotate(node);
+        }
 
         return node;
+    }
+
+    public V get(K key) {
+        Node node = getNode(root, key);
+        return node == null ? null : node.value;
+    }
+
+    public void set(K key, V newVal) {
+        Node node = getNode(root, key);
+        if (node == null)
+            throw new IllegalArgumentException(key + "does not exist.");
+        node.value = newVal;
+    }
+
+    public boolean contains(K key) {
+        return getNode(root, key) != null;
+    }
+
+//    从二分搜索树中删除键为key的节点
+    public V remove(K key) {
+        Node node = getNode(root, key);
+        if (node != null) {
+            root = remove(root, key);
+            return node.value;
+        }
+        return null;
+    }
+
+    private Node remove(Node node, K key) {
+        if (node == null) return null;
+
+        Node retNode;
+
+        if (key.compareTo(node.key) < 0) {
+            node.left = remove(node.left, key);
+            retNode = node;
+        } else if (key.compareTo(node.key) > 0) {
+            node.right = remove(node.right, key);
+            retNode = node;
+        } else { // equal
+
+//            待删除节点左子树为空的情况
+            if (node.left == null) {
+                Node rightNode = node.right;
+                node.right = null;
+                size--;
+                retNode = rightNode;
+            }
+//           待删除节点右子树为空的情况
+            else if (node.right == null) {
+                Node leftNode = node.left;
+                node.left = null;
+                size--;
+                retNode = leftNode;
+            }
+
+//            待删除节点左右子树均不为空的情况
+//            找到比删除节点大的最小节点，即待删除节点右子树的最小节点
+//            用该节点代替待删除节点的位置
+            else {
+                Node successor = minimum(node.right);
+//            successor.right = removeMin(node.right); // 没有维护平衡
+                successor.right = remove(node.right, successor.key);
+                successor.left = node.left;
+
+                node.left = node.right = null;
+                retNode = successor;
+            }
+        }
+
+        if (retNode == null) return null;
+//        更新node的height
+        retNode.height = Math.max(getHeight(retNode.left), getHeight(retNode.right));
+//        计算平衡因子
+        int balanceFactor = getBalanceFactor(retNode);
+        if (Math.abs(balanceFactor) > 1)
+            System.out.println("Unbalanced: " + balanceFactor);
+
+//      LL
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) >= 0)
+            return rightRotate(retNode); // 依次返回，平衡父节点
+//      RR
+        if (balanceFactor < -1 && getBalanceFactor(retNode.right) <= 0)
+            return leftRotate(retNode); // 依次返回，平衡父节点
+//      LR
+        if (balanceFactor > 1 && getBalanceFactor(retNode.left) < 0) {
+            retNode.left = leftRotate(retNode.left); // 转换为LL
+            return rightRotate(retNode);
+        }
+//      RL
+        if (balanceFactor < -1 && getBalanceFactor(retNode.right) > 0) {
+            retNode.right = rightRotate(retNode.right); // 转换为RR
+            return leftRotate(retNode);
+        }
+        return retNode;
+    }
+
+    private Node getNode(Node node, K key) {
+        if (node == null) return null;
+
+        if (key.compareTo(node.key) == 0) return node;
+        else if (key.compareTo(node.key) < 0)
+            return getNode(node.left, key);
+        else return getNode(node.right, key); // > 0
+    }
+
+//    返回以node为root的二分搜索树的最小值所在的节点
+    private Node minimum(Node node) {
+        if (node.left == null) return node;
+        return minimum(node.left);
     }
 }
